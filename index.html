@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Ionic Naming Rules — Which Rule Applies?</title>
+<meta name="theme-color" content="#0f1830" />
+<style>
+  :root{
+    --bg:#0f1830; --panel:#16213e; --panel2:#1d2b52; --ink:#eaf0ff; --muted:#9fb0d6; --line:#2c3d6b; --accent:#ffd166;
+    --good:#2fbf57; --bad:#e6294b;
+    --tA:#7fd4ff; --tR:#c3a1ff; --tP:#ffcf6b; --tRP:#ff8fc7;   /* the four rule colors */
+    --cat:#ffb066; --an:#5be0a0;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{background:radial-gradient(1200px 700px at 70% -10%, #1a2a52 0%, var(--bg) 55%);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+  header{display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1a2748,#131f3c);flex-wrap:wrap}
+  header h1{font-size:19px;margin:0;letter-spacing:.3px}
+  header .tag{font-size:12px;color:var(--muted)}
+  header .spacer{flex:1}
+  .pill{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700}
+  .pill b{color:var(--accent);font-variant-numeric:tabular-nums}
+  .helpbtn{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:700;touch-action:manipulation}
+  .helpbtn:hover{border-color:var(--accent)}
+  .wrap{max-width:1180px;margin:0 auto;padding:12px 14px 30px}
+
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  .tab{text-align:left;background:var(--panel);border:2px solid var(--line);border-radius:12px;padding:8px 11px;cursor:pointer;color:var(--ink);font:inherit;touch-action:manipulation;min-width:0}
+  .tab:hover{border-color:#3a4d7d} .tab.sel{border-color:var(--accent);background:#20315c} .tab.locked{opacity:.5}
+  .tab .n{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;color:var(--accent);display:flex;justify-content:space-between}
+  .tab.nm .n{color:#8fd3ff} .tab.fm .n{color:#ffb7dc} .tab.mx .n{color:#8ff0b6}
+  .tab .t{font-weight:700;font-size:14px;margin-top:2px;line-height:1.2}
+  .tab .ok{color:#8ff0b6}
+  @media (max-width:760px){ .tabs{grid-template-columns:repeat(2,1fr)} .tab .t{font-size:13px} }
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px;min-width:0}
+  .card h2{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:0 0 8px}
+  .lead{font-size:15px;line-height:1.55;margin:0 0 10px}
+  .lead b{color:var(--accent)}
+  .hint{font-size:13px;color:var(--muted);line-height:1.45}
+  .rowbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .btn{border:none;border-radius:12px;padding:12px 16px;font-size:15px;font-weight:800;cursor:pointer;color:#0f1830;background:var(--accent);touch-action:manipulation;user-select:none;-webkit-user-select:none;font-family:inherit}
+  .btn:hover{filter:brightness(1.06)}
+  .btn.secondary{background:var(--panel2);color:var(--ink);border:1px solid var(--line)} .btn.secondary:hover{border-color:var(--accent);filter:none}
+  .btn:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:rgba(10,17,36,.97);border:1px solid var(--good);color:#bff5d3;border-radius:12px;padding:10px 18px;font-weight:700;font-size:15px;display:none;box-shadow:0 8px 24px #0009;z-index:70;text-align:center;max-width:92%}
+  .toast.show{display:block}
+
+  /* rule color chips */
+  .tc{display:inline-block;padding:2px 10px;border-radius:999px;font-weight:800;font-size:12.5px;border:1.5px solid;white-space:nowrap}
+  .tc.A{color:var(--tA);border-color:var(--tA);background:rgba(127,212,255,.12)} .tc.R{color:var(--tR);border-color:var(--tR);background:rgba(195,161,255,.13)}
+  .tc.P{color:var(--tP);border-color:var(--tP);background:rgba(255,207,107,.13)} .tc.RP{color:var(--tRP);border-color:var(--tRP);background:rgba(255,143,199,.13)}
+  .legendrow{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 2px}
+
+  /* animation stage */
+  .stage{background:#0a1024;border:1px solid var(--line);border-radius:14px;padding:14px 12px 12px;position:relative;overflow:hidden}
+  .lanes{display:grid;gap:12px}
+  .lanes.l1{grid-template-columns:minmax(0,520px);justify-content:center} .lanes.l2{grid-template-columns:1fr 1fr} .lanes.l4{grid-template-columns:1fr 1fr}
+  @media (max-width:700px){ .lanes.l2,.lanes.l4{grid-template-columns:1fr} }
+  .lane{background:#0c1428;border:2px solid var(--line);border-radius:14px;padding:12px 10px;text-align:center;transition:border-color .4s}
+  .lane.typed.tA{border-color:var(--tA)} .lane.typed.tR{border-color:var(--tR)} .lane.typed.tP{border-color:var(--tP)} .lane.typed.tRP{border-color:var(--tRP)}
+  .given{font-size:clamp(30px,5.4vw,50px);font-weight:900;line-height:1.2;letter-spacing:.5px}
+  .given span{display:inline-block;border:3px solid transparent;border-radius:10px;padding:0 5px;transition:all .3s}
+  .given .gc,.given .nw1{color:var(--cat)} .given .ga,.given .nw2{color:var(--an)} .given .nrr{color:var(--tR)}
+  .given.n{font-size:clamp(24px,4.2vw,38px)}
+  .given .nw1+.nrr,.pgiven .nw1+.nrr{padding-left:0;margin-left:-8px}
+  .given .hl{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.55);transform:scale(1.06)}
+  .ql,.wl{font-size:13.5px;line-height:1.4;color:#cfdcf7;opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .4s;text-align:center}
+  .ql.vis,.wl.vis{opacity:1;max-height:6.5em;margin:6px 0 0}
+  .ql b,.wl b{color:var(--accent)}
+  .ql .q{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;display:block}
+  .wl.na{color:#6b78a0}
+  .badge{opacity:0;max-height:0;overflow:hidden;transition:opacity .4s,max-height .4s;margin-top:6px}
+  .badge.vis{opacity:1;max-height:7em}
+  .badge small{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.35}
+  .res{font-size:clamp(20px,3.3vw,30px);font-weight:800;min-height:1.4em;margin-top:6px}
+  .res .rw{display:inline-block;opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s}
+  .res .rw.vis{opacity:1;transform:none}
+  .res .r1,.res .rf1{color:var(--cat)} .res .r2,.res .rf2{color:var(--an)} .res .rn{color:var(--tR)}
+  .res.done{text-shadow:0 0 16px rgba(255,209,102,.45)}
+  .rnote{font-size:12.5px;color:var(--muted);opacity:0;transition:opacity .4s;min-height:1.2em}
+  .rnote.vis{opacity:1}
+  .cap{font-size:clamp(14.5px,2.1vw,18px);line-height:1.5;margin:12px auto 0;max-width:820px;min-height:4.6em;text-align:center}
+  .cap b{color:var(--accent)} .cap .c1{color:var(--cat);font-weight:800} .cap .c2{color:var(--an);font-weight:800} .cap .c3{color:var(--tR);font-weight:800}
+  .dots{display:flex;gap:7px;justify-content:center;margin-top:8px}
+  .dots i{width:11px;height:11px;border-radius:50%;background:#2c3d6b;transition:.3s} .dots i.on{background:var(--accent);transform:scale(1.25)} .dots i.past{background:#8a7a40}
+  .fly{position:fixed;z-index:60;pointer-events:none;display:flex;align-items:center;justify-content:center;font-weight:900;transform-origin:0 0}
+
+  /* decision matrix (intro) */
+  .mx{display:grid;grid-template-columns:150px 1fr 1fr;gap:8px;align-items:stretch}
+  @media (max-width:640px){ .mx{grid-template-columns:90px 1fr 1fr} }
+  .mx .h{font-size:12.5px;font-weight:800;text-align:center;padding:8px 6px;border-radius:10px;background:#0c1428;border:2px solid var(--line);color:#cfdcf7;transition:.3s;display:flex;flex-direction:column;justify-content:center}
+  .mx .h small{display:block;color:var(--muted);font-size:11px;font-weight:600;margin-top:2px}
+  .mx .h.on{border-color:var(--accent);background:rgba(255,209,102,.12);color:var(--accent)}
+  .mx .cell{background:#0c1428;border:2px solid var(--line);border-radius:12px;padding:10px 8px;text-align:center;transition:.35s}
+  .mx .cell .f{font-size:clamp(22px,3.6vw,32px);font-weight:900;margin:6px 0 0} .mx .cell .nm{font-size:15px;font-weight:700;color:#cfdcf7}
+  .mx .cell .rl{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}
+  .mx .cell.dim{opacity:.35} .mx.dimall .cell{opacity:.5}
+  .mx .cell.on.A{border-color:var(--tA)} .mx .cell.on.R{border-color:var(--tR)} .mx .cell.on.P{border-color:var(--tP)} .mx .cell.on.RP{border-color:var(--tRP)}
+  .mx .cell.on{opacity:1;transform:scale(1.03)}
+  .clues{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:700px){ .clues{grid-template-columns:1fr} }
+  .clues .cl{background:#0c1428;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:14px;line-height:1.5}
+  .clues .cl h3{margin:0 0 4px;font-size:13px;color:var(--accent)}
+  .poly8{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px;margin-top:8px}
+  .poly8 div{background:#0c1428;border:1px solid var(--line);border-radius:10px;padding:6px 8px;text-align:center} .poly8 b{display:block;font-size:18px;color:var(--tP)} .poly8 span{font-size:12px;color:var(--muted)}
+
+  /* practice */
+  .prob{background:#0c1428;border:2px solid var(--line);border-radius:14px;padding:14px}
+  .prob.done{border-color:var(--good);background:#10281d}
+  .ptag{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:700;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .ptask{font-size:15px;margin:6px 0 2px;color:#cfdcf7}
+  .pgiven{font-size:clamp(34px,7vw,58px);font-weight:900;text-align:center;margin:4px 0 10px;line-height:1.2}
+  .pgiven span{display:inline-block;border:3px solid transparent;border-radius:10px;padding:0 6px;transition:.3s} .pgiven.n{font-size:clamp(26px,5vw,40px)}
+  .pgiven .gc,.pgiven .nw1{color:var(--cat)} .pgiven .ga,.pgiven .nw2{color:var(--an)} .pgiven .nrr{color:var(--tR)}
+  .pgiven .hl{background:rgba(255,80,110,.18);border-color:#ff6b81}
+  .qrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0;padding:8px 10px;background:#0a1024;border:1px solid var(--line);border-radius:12px}
+  .qrow .qt{flex:1;min-width:210px;font-size:14.5px;line-height:1.4} .qrow .qt b{color:var(--accent)}
+  .qrow .yn{display:flex;gap:8px}
+  .yn button{min-width:64px;padding:10px 14px;border-radius:10px;border:2px solid var(--line);background:var(--panel2);color:var(--ink);font:inherit;font-weight:800;font-size:15px;cursor:pointer;touch-action:manipulation}
+  .yn button:hover{border-color:var(--accent)} .yn button.sel{border-color:var(--accent);background:#2a3d72;color:var(--accent)}
+  .yn button.right{border-color:var(--good);background:#143323;color:#bff5d3} .yn button.wrong{border-color:var(--bad);background:#3a1620;color:#ff9aa9}
+  .yn button:disabled{cursor:default}
+  .fb{font-size:14px;line-height:1.5;margin:8px 0;color:var(--accent);min-height:1.5em}
+  .fb.good{color:#8ff0b6} .fb.bad{color:#ff9aa9}
+  .verdict{margin:8px 0;padding:10px 12px;border-radius:12px;background:#0a1024;border:2px solid var(--line);font-size:14px;line-height:1.5}
+  .verdict.A{border-color:var(--tA)} .verdict.R{border-color:var(--tR)} .verdict.P{border-color:var(--tP)} .verdict.RP{border-color:var(--tRP)}
+  .typed label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:700}
+  .typed .trow{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .typed input{flex:1;min-width:200px;background:#0a1024;border:2px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:19px;font-family:inherit;font-weight:700}
+  .typed input:focus{outline:none;border-color:var(--accent)} .typed input.good{border-color:var(--good);background:#143323;color:#bff5d3} .typed input.bad{border-color:var(--bad);background:#3a1620}
+  .cmpbox{margin-top:10px;background:#0a1024;border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+  .cmpbox .ct{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;font-weight:700;margin-bottom:6px}
+  .cmpbox .cl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:4px 0;font-size:16px;font-weight:700}
+  .cmpbox .cd{margin-top:6px;font-size:14px;line-height:1.5;color:#cfdcf7}
+  .how{margin-top:10px}
+
+  .modal{position:fixed;inset:0;background:#0009;display:none;align-items:center;justify-content:center;z-index:80;padding:18px}
+  .modal.show{display:flex}
+  .modalbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:460px;width:100%;padding:22px 24px;line-height:1.55;max-height:88vh;overflow:auto}
+  .modalbox h2{margin:0 0 6px;font-size:22px} .modalbox p{margin:6px 0;font-size:14.5px}
+  .field{width:100%;background:#0c1428;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:16px;font-family:inherit}
+  .row2{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+  .code{font-size:40px;font-weight:900;letter-spacing:6px;text-align:center;color:var(--accent);margin:12px 0;font-family:ui-monospace,Menlo,Consolas,monospace}
+  a.btn{text-decoration:none;display:inline-block}
+
+  #scrollstrip{position:fixed;right:3px;top:8px;bottom:8px;width:18px;background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:9px;z-index:20;touch-action:none;display:none}
+  #scrollthumb{position:absolute;left:0;right:0;top:0;min-height:48px;background:var(--accent);opacity:.75;border-radius:9px;touch-action:none}
+  #scrollstrip.drag #scrollthumb{opacity:1}
+  body.hasstrip .wrap,body.hasstrip header{padding-right:30px}
+  footer{max-width:1180px;margin:0 auto;padding:0 14px 26px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🧭 Ionic Naming Rules</h1>
+  <span class="tag">basic · Roman numeral · polyatomic</span>
+  <span class="spacer"></span>
+  <button class="helpbtn" id="codeBtn" style="display:none">🏅 Get my code</button>
+  <span class="pill" id="pill"></span>
+</header>
+<div class="wrap">
+  <div class="tabs" id="tabs"></div>
+  <div id="views"></div>
+</div>
+<div id="scrollstrip"><div id="scrollthumb"></div></div>
+<div class="toast" id="toast"></div>
+<div class="modal" id="nameModal"><div class="modalbox">
+  <h2>🎉 You finished every section!</h2>
+  <p>Type your first and last name to get your completion code.</p>
+  <input class="field" id="nameField" type="text" autocomplete="off" placeholder="First and last name">
+  <div id="nameErr" style="color:#ff8b9b;font-size:13px;min-height:1.2em;margin-top:6px"></div>
+  <div class="row2"><button class="btn secondary" id="nameCancel">Later</button><button class="btn" id="nameGo">Get my code</button></div>
+</div></div>
+<div class="modal" id="winModal"><div class="modalbox" style="text-align:center">
+  <h2>Nice work, <span id="winName"></span>!</h2>
+  <p>Your completion code:</p>
+  <div class="code" id="codeOut"></div>
+  <p class="hint" id="winNote"></p>
+  <div class="row2" style="justify-content:center;flex-wrap:wrap"><a class="btn" id="turnIn" target="_blank" rel="noopener" style="display:none">Turn it in →</a><button class="btn secondary" id="copyBtn">Copy code</button><button class="btn secondary" id="winClose">Close</button></div>
+</div></div>
+<footer>Every compound here is ionic. A <b>metal that can have more than one charge</b> needs a Roman numeral; a <b>group of atoms with a charge</b> (polyatomic ion) keeps its own name.</footer>
+
+<script>
+'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+const gcd=(a,b)=>b?gcd(b,a%b):a, lcm=(a,b)=>a*b/gcd(a,b);
+const SUPD={'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵'}, SUBD='₀₁₂₃₄₅₆₇₈₉';
+const sub=n=>n>1?String(n).replace(/\d/g,d=>SUBD[+d]):'';
+const ionTxt=(s,q,pos)=>s+(q>1?String(q).replace(/\d/g,d=>SUPD[d]):'')+(pos?'⁺':'⁻');
+const ROMAN=['','I','II','III','IV','V','VI','VII'];
+let toastT=0; function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),3600); }
+
+/* ============================ chemistry data ============================ */
+const NAMES={Li:'lithium',Na:'sodium',K:'potassium',Mg:'magnesium',Ca:'calcium',Ba:'barium',Al:'aluminum',Zn:'zinc',Ag:'silver',
+  Fe:'iron',Cu:'copper',Sn:'tin',Pb:'lead',Cr:'chromium',Co:'cobalt',Cl:'chlorine',Br:'bromine',F:'fluorine',I:'iodine',O:'oxygen',S:'sulfur',N:'nitrogen',P:'phosphorus'};
+const SINGLE={Li:1,Na:1,K:1,Mg:2,Ca:2,Ba:2,Al:3,Zn:2,Ag:1};                // metals with ONE possible charge
+const GROUPTXT={Li:'group 1',Na:'group 1',K:'group 1',Mg:'group 2',Ca:'group 2',Ba:'group 2',Al:'group 13'};
+const MULTI={Fe:[2,3],Cu:[1,2],Sn:[2,4],Pb:[2,4],Cr:[2,3],Co:[2,3]};        // metals with MORE than one possible charge
+const MONO={Cl:{q:1,stem:'chlor'},Br:{q:1,stem:'brom'},F:{q:1,stem:'fluor'},I:{q:1,stem:'iod'},O:{q:2,stem:'ox'},S:{q:2,stem:'sulf'},N:{q:3,stem:'nitr'},P:{q:3,stem:'phosph'}};
+const POLY={NH4:{d:'NH₄',a:'NH4',q:1,name:'ammonium'},OH:{d:'OH',a:'OH',q:1,name:'hydroxide'},NO3:{d:'NO₃',a:'NO3',q:1,name:'nitrate'},SO4:{d:'SO₄',a:'SO4',q:2,name:'sulfate'},
+  CO3:{d:'CO₃',a:'CO3',q:2,name:'carbonate'},PO4:{d:'PO₄',a:'PO4',q:3,name:'phosphate'},ClO3:{d:'ClO₃',a:'ClO3',q:1,name:'chlorate'},C2H3O2:{d:'C₂H₃O₂',a:'C2H3O2',q:1,name:'acetate'}};
+const POLYAN=['OH','NO3','SO4','CO3','PO4','ClO3','C2H3O2'];
+const LOOK={Cl:'ClO3',N:'NO3',S:'SO4',P:'PO4',O:'OH'};                      // look-alike pairs: single atom vs. polyatomic
+const TYPE_NAME={A:'Basic ionic',R:'Roman numeral',P:'Polyatomic',RP:'Roman numeral + polyatomic'};
+const TYPE_RULE={A:'metal name + nonmetal stem + <b>-ide</b>',R:'metal name<b>(numeral)</b> + nonmetal stem + <b>-ide</b>',P:'use the <b>polyatomic ion\'s own name</b> (no change to the ending)',RP:'metal name<b>(numeral)</b> + the <b>polyatomic ion\'s own name</b>'};
+
+function fmt(d,a,n,isPoly){ const par=isPoly&&n>1; return {d:(par?'('+d+')':d)+sub(n),a:(par?'('+a+')':a)+(n>1?n:''),par}; }
+function mkC(cat,an){   // cat: {sym,q} | {poly}; an: {sym} | {poly}
+  const catP=!!cat.poly, anP=!!an.poly;
+  const cq=catP?POLY[cat.poly].q:cat.q, aq=anP?POLY[an.poly].q:MONO[an.sym].q, l=lcm(cq,aq), fc=l/cq, fa=l/aq;
+  const cD=catP?POLY[cat.poly].d:cat.sym, cA=catP?POLY[cat.poly].a:cat.sym, aD=anP?POLY[an.poly].d:an.sym, aA=anP?POLY[an.poly].a:an.sym;
+  const f1=fmt(cD,cA,fc,catP), f2=fmt(aD,aA,fa,anP), multi=!catP&&!!MULTI[cat.sym], poly=catP||anP, type=multi?(poly?'RP':'R'):(poly?'P':'A');
+  const catName=catP?POLY[cat.poly].name:NAMES[cat.sym], anName=anP?POLY[an.poly].name:MONO[an.sym].stem+'ide';
+  return {cat,an,catP,anP,cq,aq,fc,fa,type,multi,poly,cSym:cD,aSym:aD,cPart:f1.d,aPart:f2.d,disp:f1.d+f2.d,ascii:f1.a+f2.a,aPar:f2.par,cPar:f1.par,
+    catName,anName,numeral:multi?ROMAN[cq]:'',nameStr:(multi?catName+'('+ROMAN[cq]+')':catName)+' '+anName,cIon:ionTxt(cD,cq,true),aIon:ionTxt(aD,aq,false)}; }
+const metalS=()=>{ const s=pick(Object.keys(SINGLE)); return {sym:s,q:SINGLE[s]}; };
+const metalM=()=>{ const s=pick(Object.keys(MULTI)); return {sym:s,q:pick(MULTI[s])}; };
+
+/* pair generators: two similar-looking compounds that differ in exactly the thing being compared */
+const pairAR=()=>{ const an=pick(Object.keys(MONO)); return [mkC(metalS(),{sym:an}),mkC(metalM(),{sym:an})]; };
+function pairAP(){ if(Math.random()<.3){ const an=pick(['Cl','Br','S','O','N']); return [mkC({poly:'NH4'},{sym:an}),mkC(metalS(),{sym:an})]; }
+  const m=pick(Object.keys(LOOK)), mt=metalS(); return [mkC(mt,{sym:m}),mkC(mt,{poly:LOOK[m]})]; }
+const pairRRP=()=>{ const m=pick(Object.keys(LOOK)), mt=metalM(); return [mkC(mt,{sym:m}),mkC(mt,{poly:LOOK[m]})]; };
+const pairPRP=()=>{ const pa=pick(POLYAN); return [mkC(metalS(),{poly:pa}),mkC(metalM(),{poly:pa})]; };
+const grid4=()=>{ const s=metalS(),m=metalM(),an=pick(['Cl','Br','S','O']),pa=pick(['OH','NO3','SO4']); return [mkC(s,{sym:an}),mkC(m,{sym:an}),mkC(s,{poly:pa}),mkC(m,{poly:pa})]; };
+const anyC=()=>pick([()=>mkC(metalS(),{sym:pick(Object.keys(MONO))}),()=>mkC(metalM(),{sym:pick(Object.keys(MONO))}),()=>mkC(metalS(),{poly:pick(POLYAN)}),()=>mkC(metalM(),{poly:pick(POLYAN)}),()=>mkC({poly:'NH4'},pick([{sym:'Cl'},{sym:'S'},{poly:'SO4'},{poly:'NO3'}]))])();
+
+/* ============================ progress ============================ */
+const KEY='ionicnamingrules.v1';
+let state={sec:{},code:'',name:''};
+try{ const d=JSON.parse(localStorage.getItem(KEY)||'null'); if(d&&d.sec) state=Object.assign(state,d); }catch(e){}
+const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(state)); }catch(e){} };
+const UNLOCK_ALL=/unlock/.test(location.hash);
+const SECS=[
+  {id:'intro',tab:'How to Decide',grp:'',need:4,kind:'intro'},
+  {id:'n1',tab:'Basic vs. Roman numeral',grp:'nm',head:'Names → formulas',need:4,dir:'n2f',kind:'AR'},
+  {id:'n2',tab:'Basic vs. Polyatomic',grp:'nm',head:'Names → formulas',need:4,dir:'n2f',kind:'AP'},
+  {id:'n3',tab:'Roman vs. Polyatomic',grp:'nm',head:'Names → formulas',need:4,dir:'n2f',kind:'RP'},
+  {id:'f1',tab:'Basic vs. Roman numeral',grp:'fm',head:'Formulas → names',need:4,dir:'f2n',kind:'AR'},
+  {id:'f2',tab:'Basic vs. Polyatomic',grp:'fm',head:'Formulas → names',need:4,dir:'f2n',kind:'AP'},
+  {id:'f3',tab:'Roman vs. Polyatomic',grp:'fm',head:'Formulas → names',need:4,dir:'f2n',kind:'RP'},
+  {id:'mix',tab:'Mixed Challenge',grp:'mx',head:'All four rules',need:8,dir:'mix',kind:'MIX'}];
+const nOf=id=>(state.sec[id]&&state.sec[id].n)||0, doneSec=s=>nOf(s.id)>=s.need;
+const allDone=()=>SECS.every(doneSec);
+let cur=0;
+function unlocked(i){ return UNLOCK_ALL||i===0||doneSec(SECS[i-1]); }
+function renderTabs(){ $('#tabs').innerHTML=SECS.map((s,i)=>`<button class="tab ${s.grp} ${i===cur?'sel':''} ${unlocked(i)?'':'locked'}" data-i="${i}"><div class="n"><span>${s.head||'Start here'}</span><span class="ok">${doneSec(s)?'✓':Math.min(nOf(s.id),s.need)+'/'+s.need}</span></div><div class="t">${unlocked(i)?'':'🔒 '}${s.tab}</div></button>`).join('');
+  $$('#tabs .tab').forEach(b=>b.onclick=()=>show(+b.dataset.i));
+  const total=SECS.filter(doneSec).length; $('#pill').innerHTML=`Sections <b>${total}/${SECS.length}</b>`; $('#codeBtn').style.display=allDone()?'':'none'; }
+function show(i){ if(!unlocked(i)){ toast('Finish the section before it first.'); return; } cur=i; $$('#views > .view').forEach(v=>v.style.display='none'); const v=ensureView(i); v.style.display=''; stopAll(); renderTabs(); window.scrollTo(0,0); v._refresh&&v._refresh(); }
+
+/* ============================ steppers + flying chips ============================ */
+const STEPS=[];
+function stopAll(){ STEPS.forEach(S=>{ if(S.timer) S.stop(); }); }
+function stepper(root,count,apply,ms){ const S={step:0,timer:null,root}; STEPS.push(S); const btn=a=>$(`[data-a="${a}"]`,root);
+  S.label=()=>{ const p=btn('play'); if(p) p.textContent=S.timer?'⏸ Pause':(S.step===count-1?'▶ Play again':'▶ Play'); };
+  S.go=(n,anim)=>{ const prev=S.step; S.step=clamp(n,0,count-1); apply(S.step,anim,prev); btn('back').disabled=S.step===0; btn('next').disabled=S.step===count-1; S.label();
+    $('.dots',root).innerHTML=Array.from({length:count},(_,i)=>`<i class="${i===S.step?'on':i<S.step?'past':''}"></i>`).join(''); };
+  S.stop=()=>{ clearInterval(S.timer); S.timer=null; S.label(); };
+  S.play=()=>{ if(S.timer){ S.stop(); return; } if(S.step>=count-1) S.go(0,false); S.timer=setInterval(()=>{ if(S.step>=count-1){ S.stop(); return; } S.go(S.step+1,true); },ms||4200); S.go(S.step+1,true); };
+  S.reset=()=>{ S.stop(); S.go(0,false); };
+  btn('back').onclick=()=>{ S.stop(); S.go(S.step-1,false); }; btn('next').onclick=()=>{ S.stop(); S.go(S.step+1,true); };
+  btn('replay').onclick=()=>{ S.stop(); S.go(0,false); }; btn('play').onclick=S.play; return S; }
+function fly(from,to,text,color,cb){ if(!from||!to||!from.animate){ cb&&cb(); return; } const a=from.getBoundingClientRect(),b=to.getBoundingClientRect(); const d=document.createElement('div');
+  d.className='fly'; d.textContent=text; d.style.cssText=`left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;color:${color};font-size:${getComputedStyle(from).fontSize}`;
+  document.body.appendChild(d); const s=b.width/Math.max(1,a.width);
+  const an=d.animate([{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${b.left-a.left}px,${b.top-a.top}px) scale(${s})`,opacity:.9}],{duration:800,easing:'cubic-bezier(.3,.7,.3,1)'});
+  an.onfinish=()=>{ d.remove(); cb&&cb(); }; an.oncancel=()=>{ d.remove(); cb&&cb(); }; }
+const BTNS=(extra)=>`<div class="rowbtns" style="justify-content:center"><button class="btn secondary" data-a="back">◀ Back</button><button class="btn" data-a="play">▶ Play</button><button class="btn secondary" data-a="next">Next ▶</button><button class="btn secondary" data-a="replay">↺ Replay</button>${extra||''}</div>`;
+const tcChip=t=>`<span class="tc ${t}">${TYPE_NAME[t]}</span>`;
+
+/* ============================ the comparison animation ============================ */
+function q1Line(c,dir){ const m=c.cat.sym;
+  if(dir==='f2n'){ if(c.catP) return `<span class="q">Question 1: more than one charge?</span><b>${c.cSym}</b> is a polyatomic ion that is always 1+ → <b>no numeral</b>`;
+    if(c.multi) return `<span class="q">Question 1: more than one charge?</span><b>${m}</b> can be ${MULTI[m].join('+ or ')}+ → <b>needs a Roman numeral</b>`;
+    return `<span class="q">Question 1: more than one charge?</span><b>${m}</b> ${GROUPTXT[m]?'is in '+GROUPTXT[m]+' and ':''}only forms ${c.cq}+ → <b>no numeral</b>`; }
+  if(c.multi) return `<span class="q">Question 1: Roman numeral in the name?</span><b>Yes: (${c.numeral})</b> tells us ${m} has a ${c.cq}+ charge here`;
+  if(c.catP) return `<span class="q">Question 1: Roman numeral in the name?</span><b>No.</b> Ammonium is always ${c.cIon}`;
+  return `<span class="q">Question 1: Roman numeral in the name?</span><b>No numeral</b> → ${c.catName} only forms ${c.cq}+${GROUPTXT[m]?' ('+GROUPTXT[m]+')':''}`; }
+function q2Line(c,dir){ const Q='Question 2: polyatomic ion?';
+  if(dir==='f2n'){ if(c.anP) return `<span class="q">${Q}</span><b>${c.aSym}</b> is a group of atoms → <b>polyatomic</b> (${c.anName})`+(c.catP?` and ${c.cSym} is polyatomic too`:'');
+    if(c.catP) return `<span class="q">${Q}</span><b>${c.cSym}</b> is a group of atoms → <b>polyatomic</b> (ammonium)`;
+    return `<span class="q">${Q}</span><b>${c.an.sym}</b> is a single atom → <b>not polyatomic</b>`; }
+  if(c.anP) return `<span class="q">${Q}</span><b>${c.anName}</b> is a polyatomic ion → ${c.aIon}`+(c.anName==='hydroxide'?' (it ends in -ide, but it is still polyatomic)':'')+(c.catP?' and ammonium is too':'');
+  if(c.catP) return `<span class="q">${Q}</span><b>ammonium</b> is a polyatomic ion → ${c.cIon}`;
+  return `<span class="q">${Q}</span><b>${c.anName}</b> ends in -ide and comes from one atom → <b>not polyatomic</b>`; }
+function laneHTML(c,dir){
+  const badge=`<div class="badge">${tcChip(c.type)}<small>${TYPE_RULE[c.type]}</small></div>`;
+  const q=`<div class="ql q1">${q1Line(c,dir)}</div><div class="ql q2">${q2Line(c,dir)}</div>`;
+  if(dir==='f2n'){ const ending=c.anP?'':NAMES[c.an.sym].slice(MONO[c.an.sym].stem.length), tot=c.fa*c.aq;
+    const w1=`${c.cSym} → <b>${c.catName}</b>`;
+    const w2=c.multi?`Negative total: ${c.fa} × ${c.aq}− = <b>${tot}−</b> → the ${c.fc>1?c.fc+' ':''}${c.cat.sym} ion${c.fc>1?'s':''} must total ${tot}+${c.fc>1?' → '+tot+'+ ÷ '+c.fc+' = ':' = '}<b>${c.cq}+</b> → <b>${c.numeral}</b>`:`No numeral needed`;
+    const w3=c.anP?`${c.aSym} → <b>${c.anName}</b> (keep the ion's own name)`:`${c.an.sym} → ${NAMES[c.an.sym]} → drop <s>-${ending}</s> → ${MONO[c.an.sym].stem} + ide = <b>${c.anName}</b>`;
+    return `<div class="lane" data-t="${c.type}"><div class="given"><span class="gc">${c.cPart}</span><span class="ga">${c.aPart}</span></div>${q}${badge}
+      <div class="wl w1">${w1}</div><div class="wl w2 ${c.multi?'':'na'}">${w2}</div><div class="wl w3">${w3}</div>
+      <div class="res"><span class="rw r1">${c.catName}</span><span class="rw rn">${c.multi?'('+c.numeral+')':''}</span> <span class="rw r2">${c.anName}</span></div></div>`; }
+  const w1=`${c.multi?c.catName+'('+c.numeral+')':c.catName} → <b>${c.cIon}</b> (charge ${c.cq}+)`, w2=`${c.anName} → <b>${c.aIon}</b> (charge ${c.aq}−)`;
+  const w3=`${c.fc} × ${c.cq}+ = <b>${c.fc*c.cq}+</b> and ${c.fa} × ${c.aq}− = <b>${c.fa*c.aq}−</b> → they cancel with <b>${c.fc} : ${c.fa}</b>`;
+  const note=c.aPar||c.cPar?`Parentheses around ${c.aPar?c.aPart.replace(/[₀-₉]/g,''):c.cPart.replace(/[₀-₉]/g,'')} because we need ${c.aPar?c.fa:c.fc} of that polyatomic ion.`:(c.fc>1||c.fa>1?'The subscripts show how many of each ion.':'One of each, so no subscripts.');
+  return `<div class="lane" data-t="${c.type}"><div class="given n"><span class="nw1">${c.catName}</span><span class="nrr">${c.multi?'('+c.numeral+')':''}</span> <span class="nw2">${c.anName}</span></div>${q}${badge}
+    <div class="wl w1">${w1}</div><div class="wl w2">${w2}</div><div class="wl w3">${w3}</div>
+    <div class="res"><span class="rw rf1">${c.cPart}</span><span class="rw rf2">${c.aPart}</span></div><div class="rnote">${note}</div></div>`; }
+function diffText(cs){ const T=cs.map(c=>c.type), has=t=>T.includes(t);
+  if(cs.length===4) return `<b>Two separate questions:</b> the metal decides whether there is a numeral, and the presence of a polyatomic ion decides whether the ion keeps its own name. Any combination can happen, so always ask both.`;
+  if(cs.length===1) return `Rule used: ${tcChip(cs[0].type)} ${TYPE_RULE[cs[0].type]}.`;
+  const R=cs.find(c=>c.multi), A=cs.find(c=>!c.multi), P=cs.find(c=>c.poly);
+  if(has('A')&&has('R')) return `Same negative ion, different metal. <b>${R.cat.sym}</b> can have more than one charge, so its name needs the Roman numeral <b>(${R.numeral})</b>. <b>${A.cat.sym}</b> only forms one charge, so no numeral.`;
+  if(has('A')&&has('P')){ const p=cs.find(c=>c.type==='P'); return p.catP&&!p.anP?`<b>${p.cSym}</b> is a group of atoms (ammonium), so ${p.disp} is polyatomic even though the negative ion is just ${p.an.sym}. The other one is basic ionic.`:`Look at the negative ion. <b>${p.aSym}</b> is a group of atoms with its own name (<b>${p.anName}</b>), so it is not changed to -ide. The single atom becomes <b>-ide</b>.`; }
+  if(has('R')&&has('RP')){ const p=cs.find(c=>c.type==='RP'); return `Both need a Roman numeral for ${p.cat.sym}. Only the second has a polyatomic ion (<b>${p.anName}</b>), so its name uses the ion's own name, and the formula uses parentheses when you need more than one.`; }
+  if(has('P')&&has('RP')){ const r=cs.find(c=>c.type==='RP'); return `Both contain the polyatomic ion <b>${r.anName}</b>. Only <b>${r.cat.sym}</b> can have more than one charge, so only that name gets a Roman numeral.`; }
+  return diffGeneric(cs); }
+const diffGeneric=cs=>`Different rules apply: ${cs.map(c=>tcChip(c.type)).join(' ')}.`;
+function capF2N(step,cs){ const one=cs.length===1;
+  return [one?`Let's name <b>${cs[0].disp}</b> by asking two questions about it.`:`These ${cs.length} formulas look alike, but they do not all follow the same naming rule. Ask two questions about each one.`,
+   `<b>Question 1: can the metal have more than one charge?</b> Look at the first element. A transition metal (or tin or lead) can, so its name needs a Roman numeral. Groups 1, 2 and Al, Zn, Ag only have one charge.`,
+   `<b>Question 2: is there a polyatomic ion?</b> Look for a group of atoms (NO₃, SO₄, OH… or NH₄ at the front). One element symbol is just a single atom.`,
+   `<b>The two answers pick the rule.</b> Basic ionic, Roman numeral, polyatomic, or Roman numeral + polyatomic.`,
+   `<b>Name the first part.</b> The metal keeps its name, and NH₄ is ammonium.`,
+   `<b>The Roman numeral.</b> Only if the metal can have more than one charge: find the total negative charge, split it among the metal ions to get one ion's charge, and write it in parentheses right after the name.`,
+   `<b>Name the negative part.</b> A single atom: drop the ending and add <b>-ide</b>. A polyatomic ion: use its own name, unchanged.`,
+   diffText(cs)][step]; }
+function capN2F(step,cs){ const one=cs.length===1;
+  return [one?`Let's write the formula for <b>${cs[0].nameStr}</b> by asking two questions about the name.`:`These ${cs.length} names look alike, but they do not all follow the same rule. Ask two questions about each one.`,
+   `<b>Question 1: is there a Roman numeral?</b> The numeral in parentheses is the metal's charge. No numeral means the metal only has one charge (look it up by its group).`,
+   `<b>Question 2: is there a polyatomic ion?</b> Names ending in <b>-ate</b> or <b>-ite</b>, <b>hydroxide</b>, and <b>ammonium</b> are polyatomic. A plain <b>-ide</b> is one atom.`,
+   `<b>The two answers pick the rule.</b> Basic ionic, Roman numeral, polyatomic, or Roman numeral + polyatomic.`,
+   `<b>Write the positive ion</b> with its charge: from the numeral if there is one, otherwise from the periodic table. Ammonium is NH₄⁺.`,
+   `<b>Write the negative ion</b> with its charge: a single atom gets its usual charge, and a polyatomic ion's formula and charge come from the list.`,
+   `<b>Balance the charges.</b> Find how many of each ion make the positive and negative totals equal.`,
+   `<b>Write the formula:</b> positive ion first, with the subscripts. Put parentheses around a polyatomic ion only when you need more than one.`,
+   diffText(cs)][step]; }
+function makeComparator(root,dir,cs,cfg){ cfg=cfg||{};
+  root.innerHTML=`<div class="stage"><div class="lanes l${cs.length}">${cs.map(c=>laneHTML(c,dir)).join('')}</div><div class="cap"></div><div class="dots"></div></div>${BTNS(cfg.extra)}`;
+  const lanes=$$('.lane',root), count=dir==='f2n'?8:9;
+  const T=(L,sel,on)=>{ const e=$(sel,L); if(e) e.classList.toggle('vis',on); }, H=(L,sel,on)=>{ const e=$(sel,L); if(e) e.classList.toggle('hl',on); };
+  const S=stepper(root,count,(step,anim,prev)=>{
+    lanes.forEach((L,k)=>{ const c=cs[k]; T(L,'.q1',step>=1); T(L,'.q2',step>=2); T(L,'.badge',step>=3); L.classList.toggle('typed',step>=3); L.classList.remove('tA','tR','tP','tRP'); if(step>=3) L.classList.add('t'+c.type);
+      T(L,'.w1',step>=4); T(L,'.w2',step>=5); T(L,'.w3',step>=6);
+      if(dir==='f2n'){ H(L,'.gc',step===1||step===4||step===5||(step===2&&c.catP)); H(L,'.ga',step===2||step===5||step===6);
+        const r1=$('.r1',L),rn=$('.rn',L),r2=$('.r2',L); const f1=anim&&step===4&&prev===3, f2=anim&&step===5&&prev===4&&c.multi, f3=anim&&step===6&&prev===5;
+        r1.classList.toggle('vis',step>=4&&!f1); rn.classList.toggle('vis',step>=5&&!f2); r2.classList.toggle('vis',step>=6&&!f3); $('.res',L).classList.toggle('done',step===7);
+        if(f1) fly($('.gc',L),r1,c.cSym,'#ffb066',()=>r1.classList.add('vis')); if(f2) fly($('.w2 b:last-of-type',L),rn,c.numeral,'#c3a1ff',()=>rn.classList.add('vis')); if(f3) fly($('.ga',L),r2,c.aSym,'#5be0a0',()=>r2.classList.add('vis')); }
+      else{ H(L,'.nrr',step===1&&c.multi); H(L,'.nw1',(step===1&&!c.multi)||step===4||(step===2&&c.catP)); H(L,'.nw2',step===2||step===5);
+        const a=$('.rf1',L),b=$('.rf2',L),f=anim&&step===7&&prev===6; a.classList.toggle('vis',step>=7&&!f); b.classList.toggle('vis',step>=7&&!f);
+        if(f){ fly($('.w1 b',L),a,c.cSym,'#ffb066',()=>a.classList.add('vis')); fly($('.w2 b',L),b,c.aSym,'#5be0a0',()=>b.classList.add('vis')); }
+        $('.rnote',L).classList.toggle('vis',step>=8); $('.res',L).classList.toggle('done',step===8); }
+    });
+    $('.cap',root).innerHTML=(dir==='f2n'?capF2N:capN2F)(step,cs); },cfg.ms);
+  S.go(0,false); return S; }
+
+/* ============================ intro: the 2x2 decision matrix ============================ */
+function buildIntro(view){
+  const ex={A:mkC({sym:'Na',q:1},{sym:'Cl'}),R:mkC({sym:'Fe',q:3},{sym:'Cl'}),P:mkC({sym:'Ca',q:2},{poly:'NO3'}),RP:mkC({sym:'Fe',q:3},{poly:'NO3'})};
+  const cell=t=>`<div class="cell ${t}" data-t="${t}">${tcChip(t)}<div class="f">${ex[t].disp}</div><div class="nm">${ex[t].nameStr}</div><div class="rl">${TYPE_RULE[t]}</div></div>`;
+  view.innerHTML=`<div class="card"><h2>Two questions decide the naming rule</h2>
+      <p class="lead">Every ionic compound uses one of <b>four</b> rules. You don't have to memorize which compound uses which: just answer <b>two yes/no questions</b> about it.</p>
+      <div class="stage"><div class="mx" id="mx">
+        <div class="h"></div><div class="h col" data-c="0">Question 2: polyatomic ion?<small>NO: only single atoms</small></div><div class="h col" data-c="1">Question 2: polyatomic ion?<small>YES: a group of atoms</small></div>
+        <div class="h row" data-r="0">Question 1: more than one charge?<small>NO: one charge, no numeral</small></div>${cell('A')}${cell('P')}
+        <div class="h row" data-r="1">Question 1: more than one charge?<small>YES: needs a Roman numeral</small></div>${cell('R')}${cell('RP')}
+      </div><div class="cap"></div><div class="dots"></div></div>${BTNS()}</div>
+    <div class="card"><h2>How to ask the two questions</h2><div class="clues">
+      <div class="cl"><h3>Looking at a FORMULA</h3><b>Q1:</b> Is the metal Fe, Cu, Sn, Pb, Cr or Co (a transition metal, tin or lead)? Then it can have more than one charge.<br><b>Q2:</b> Do you see a group of atoms like NO₃, SO₄, OH, CO₃, PO₄, ClO₃, C₂H₃O₂, or NH₄ at the front? Often it is in parentheses with a subscript.</div>
+      <div class="cl"><h3>Looking at a NAME</h3><b>Q1:</b> Is there a Roman numeral in parentheses, like iron(III)?<br><b>Q2:</b> Does the second word end in <b>-ate</b> or <b>-ite</b>, or is it <b>hydroxide</b>, or does it start with <b>ammonium</b>? A plain <b>-ide</b> (chloride, oxide, sulfide…) is a single atom.</div></div>
+      <div class="hint" style="margin-top:8px">The polyatomic ions in this activity:</div>
+      <div class="poly8">${Object.keys(POLY).map(k=>`<div><b>${ionTxt(POLY[k].d,POLY[k].q,k==='NH4')}</b><span>${POLY[k].name}</span></div>`).join('')}</div></div>
+    <div class="card"><h2>Quick check: answer the two questions (4 correct to continue)</h2><div class="prac"></div></div>`;
+  const mx=$('#mx',view),cap=$('.cap',view);
+  const caps=[`Here are the four possibilities, with an example of each. Let's see how the two questions lead to them.`,
+    `<b>Question 1</b> is about the metal: <b>can it have more than one charge?</b> If yes, the name needs a Roman numeral (the bottom row). If no, there is no numeral (the top row).`,
+    `<b>Question 2</b> is about polyatomic ions: <b>is there a group of atoms with a charge?</b> If yes, that ion keeps its own name (the right column). If no, only single atoms are present (the left column).`,
+    `<b>Basic ionic</b> (${ex.A.disp}, ${ex.A.nameStr}): one-charge metal and single atoms. Metal name + nonmetal stem + <b>-ide</b>.`,
+    `<b>Roman numeral</b> (${ex.R.disp}, ${ex.R.nameStr}): the metal can have more than one charge, so the numeral says which. The nonmetal still gets <b>-ide</b>.`,
+    `<b>Polyatomic</b> (${ex.P.disp}, ${ex.P.nameStr}): a one-charge metal with a polyatomic ion. Use the ion's own name: <b>nitrate</b>, not "nitride".`,
+    `<b>Roman numeral + polyatomic</b> (${ex.RP.disp}, ${ex.RP.nameStr}): both rules at once. Numeral for the metal, own name for the polyatomic ion.`,
+    `<b>Watch out:</b> <b>hydroxide</b> ends in -ide but is polyatomic, and <b>ammonium</b> compounds (like NH₄Cl, ammonium chloride) are polyatomic even with a plain -ide ion. That is why you ask <b>both</b> questions every time.`];
+  const S=stepper(view,caps.length,(step)=>{ cap.innerHTML=caps[step]; const on={A:step===3,R:step===4,P:step===5,RP:step===6};
+    $$('.h.row',mx).forEach(e=>e.classList.toggle('on',step===1)); $$('.h.col',mx).forEach(e=>e.classList.toggle('on',step===2));
+    $$('.cell',mx).forEach(e=>{ const t=e.dataset.t; e.classList.toggle('on',!!on[t]); e.classList.toggle('dim',step>=3&&step<=6&&!on[t]); }); });
+  S.go(0,false); return {practice:$('.prac',view)}; }
+
+/* ============================ practice engine ============================ */
+const SECGEN={
+  AR:()=>[...shuffle(pairAR()),...shuffle(pairAR())], AP:()=>[...shuffle(pairAP()),...shuffle(pairAP())], RP:()=>shuffle([pairRRP(),pairPRP()]).flatMap(shuffle)};
+function genProblems(sec,count){ const out=[]; const dirOf=()=>sec.dir==='mix'||sec.kind==='intro'?pick(['n2f','f2n']):sec.dir;
+  if(sec.kind==='MIX'||sec.kind==='intro'){ let last=''; for(let i=0;i<count;i++){ let c,tries=0; do{ c=anyC(); tries++; }while((c.type===last&&tries<6)); last=c.type; out.push({c,dir:dirOf(),pair:-1}); } return out; }
+  while(out.length<count){ const base=SECGEN[sec.kind](); for(let i=0;i<base.length&&out.length<count+((count%2)?1:0);i+=2){ const k=out.length/2|0; out.push({c:base[i],dir:sec.dir,pair:k,first:true},{c:base[i+1],dir:sec.dir,pair:k,first:false}); } }
+  return out.slice(0,count); }
+function stripHL(){ }
+function givenHTML(p){ const c=p.c; return p.dir==='f2n'?`<div class="pgiven"><span class="gc">${c.cPart}</span><span class="ga">${c.aPart}</span></div>`:
+  `<div class="pgiven n"><span class="nw1">${c.catName}</span><span class="nrr">${c.multi?'('+c.numeral+')':''}</span> <span class="nw2">${c.anName}</span></div>`; }
+const Q1T={f2n:'Question 1: look at the metal. <b>Can it have more than one charge</b> (does it need a Roman numeral)?',n2f:'Question 1: <b>is there a Roman numeral</b> in the name?'};
+const Q2T={f2n:'Question 2: <b>is there a polyatomic ion</b> (a group of atoms) in the formula?',n2f:'Question 2: <b>is there a polyatomic ion</b>? (-ate/-ite, hydroxide, or ammonium)'};
+function hintQ1(p,said){ const c=p.c,m=c.cat.sym;
+  if(p.dir==='f2n'){ if(said&&!c.multi) return c.catP?`NH₄ (ammonium) is polyatomic and always 1+, so it never needs a numeral.`:`${m} only forms a ${c.cq}+ ion${GROUPTXT[m]?' ('+GROUPTXT[m]+')':''}, so there is no numeral. Roman numerals are only for metals that can have more than one charge.`;
+    return `${m} is a transition metal (or Sn/Pb) that can be ${MULTI[m].join('+ or ')}+, so the name needs a Roman numeral to say which.`; }
+  return said?`Look again: there is no numeral in parentheses, so no Roman numeral here.`:`Look at the first word: the <b>(${c.numeral})</b> is a Roman numeral.`; }
+function hintQ2(p,said){ const c=p.c;
+  if(p.dir==='f2n'){ if(said) return `Every part of this formula is a single atom. A polyatomic ion would be a group of atoms like NO₃ or SO₄.`; return c.anP?`<b>${c.aSym}</b> is a group of atoms bonded together: a polyatomic ion (${c.anName}).`:`<b>${c.cSym}</b> is a group of atoms: the polyatomic ion ammonium.`; }
+  if(said) return `<b>${c.anName}</b> ends in -ide and names a single atom, and the first word isn't ammonium. So there is no polyatomic ion.`;
+  return c.anP?`<b>${c.anName}</b> is a polyatomic ion${c.anName==='hydroxide'?' (even though it ends in -ide, hydroxide is polyatomic)':' (-ate/-ite names are polyatomic)'}.`:`<b>ammonium</b> is the polyatomic ion NH₄⁺.`; }
+
+/* ---- checking typed answers ---- */
+const ALT={aluminum:'aluminium',sulfide:'sulphide',sulfate:'sulphate'};
+const same=(v,e)=>{ if(v===e) return true; let e2=e; for(const k in ALT) e2=e2.split(k).join(ALT[k]); return v===e2; };
+function checkName(p,val,tries){ const c=p.c,h=[]; const raw=val.trim(); if(!raw) return {ok:false,h:['Type the compound name.'],bad:'c'};
+  const norm=raw.replace(/\s*\(\s*/,'(').replace(/\s*\)\s*/,') ').replace(/\s+/g,' ').trim(); const m=norm.match(/^([A-Za-z]+)(?:\(([A-Za-z0-9]+)\))?\s+([A-Za-z]+)$/);
+  if(!m) return {ok:false,h:['Write the first part (with its Roman numeral in parentheses if it needs one), then a space, then the negative ion\'s name.'],bad:true};
+  const w1=m[1].toLowerCase(),num=m[2],w3=m[3].toLowerCase(); let ok=true;
+  if(!same(w1,c.catName)){ ok=false; h.push(w1===c.cSym.toLowerCase()?'Write the full name of the first part, not its symbol.':(c.catP?'NH₄ at the front is called ammonium.':`The metal is ${c.cat.sym}: ${tries>1?'its name starts with “'+c.catName.slice(0,3)+'…”.':'write its name exactly as the periodic table does.'}`)); }
+  if(c.multi&&!num){ ok=false; h.push(`${c.cat.sym} can have more than one charge, so add its Roman numeral in parentheses right after the metal's name.`); }
+  else if(!c.multi&&num){ ok=false; h.push(`${c.catName} ${c.catP?'is always NH₄⁺':'only has one possible charge'}, so it does not get a Roman numeral. Take the (${num}) out.`); }
+  else if(c.multi&&num!==c.numeral){ ok=false; if(/^\d+$/.test(num)) h.push('Use a Roman numeral (I, II, III, IV…), not a digit.'); else if(num.toUpperCase()===c.numeral) h.push('Roman numerals are written with capital letters.');
+    else h.push(tries>1?`${c.aSym} is ${c.aq}− and there ${c.fa>1?'are '+c.fa:'is 1'}, so the negative total is ${c.fa*c.aq}−. The ${c.fc>1?c.fc+' metal ions share':'metal ion has'} ${c.fa*c.aq}+: divide to get one ion's charge.`:'Work out the metal\'s charge: find the total negative charge, then share the same positive total among the metal ions.'); }
+  if(!same(w3,c.anName)){ ok=false;
+    if(c.anP&&Object.values(MONO).some(m=>m.stem+'ide'===w3)) h.push(`${c.aSym} is a polyatomic ion, so it keeps its own name (${tries>1?c.anName:'not -ide'}).`);
+    else if(c.anP) h.push(`Use the polyatomic ion's own name for ${c.aSym}.${tries>1?' It starts with “'+c.anName.slice(0,3)+'…”.':''}`);
+    else if(Object.values(POLY).some(x=>x.name===w3)) h.push(`${c.an.sym} is just a single atom, so drop the ending of ${NAMES[c.an.sym]} and add -ide.`);
+    else if(w3===NAMES[c.an.sym]) h.push(`That is the element's name. Drop its ending and add -ide.`);
+    else h.push(`Name the negative part: single atom, so drop the ending and add -ide.${tries>1?' It starts with “'+c.anName.slice(0,3)+'…”.':''}`); }
+  return {ok,h}; }
+const SUBMAP={'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9'};
+function checkFormula(p,val,tries){ const c=p.c; const v=val.trim().replace(/\s+/g,'').replace(/[₀-₉]/g,x=>SUBMAP[x]); if(!v) return {ok:false,h:['Type the formula.']};
+  if(v===c.ascii) return {ok:true,h:[]}; const h=[];
+  if(/^[a-z]/.test(v)) h.push('Element symbols start with a capital letter (and a second letter, if any, is lowercase).');
+  const noPar=s=>s.replace(/[()]/g,''); const stripN=s=>s.replace(/\d/g,'');
+  if(noPar(v)===noPar(c.ascii)&&v!==c.ascii) h.push(c.aPar||c.cPar?`Close! You need <b>parentheses</b> around the polyatomic ion when you have more than one of it: ${c.aPar?'('+c.aSym+')'+sub(c.fa):'('+c.cSym+')'+sub(c.fc)}.`:`Parentheses are only for a polyatomic ion that has a subscript greater than 1.`);
+  else if(stripN(noPar(v))===stripN(noPar(c.ascii))) h.push(`The right symbols, but check the subscripts: the positive total must equal the negative total (${c.cIon} and ${c.aIon}).`);
+  else if(stripN(noPar(v))===stripN(noPar(c.aPart.replace(/[₀-₉]/g,'')+c.cPart.replace(/[₀-₉]/g,'')))) h.push('Write the positive ion first.');
+  else h.push(`Write each ion with its charge${tries>1?` (${c.cIon} and ${c.aIon})`:''}, then balance the charges with subscripts.`);
+  if(tries>2&&h.length<2) h.push(`The charges are ${c.cq}+ and ${c.aq}−. Cancel them: ${c.fc} × ${c.cq}+ = ${c.fa} × ${c.aq}−.`);
+  return {ok:false,h}; }
+
+function makePractice(root,sec){
+  const P={sec,list:[],idx:0,stage:'decide',tries:0,miss:0,a:{q1:null,q2:null},how:null,solvedHere:0}; const decideOnly=sec.kind==='intro';
+  const need=()=>Math.max(0,sec.need-nOf(sec.id));
+  P.start=()=>{ const n=Math.max(2,need()+(need()%2)); P.list=genProblems(sec,n); P.idx=0; P.solvedHere=0; render(); };
+  function render(){ P.stage='decide'; P.tries=0; P.miss=0; P.a={q1:null,q2:null}; const p=P.list[P.idx]; if(!p){ P.list=genProblems(sec,2); P.idx=0; return render(); }
+    const done=doneSec(sec), left=need(), pairTag=p.pair>=0?`Pair ${p.pair+1} · ${p.first?'first compound':'now compare it with the last one'}`:'';
+    root.innerHTML=`<div class="prob"><div class="ptag"><span>${done?'✓ Section complete: bonus practice':`Problem ${Math.min(sec.need,nOf(sec.id)+1)} of ${sec.need}`}</span><span>${pairTag}</span></div>
+      <div class="ptask">${decideOnly?'Which rule does this compound use?':(p.dir==='f2n'?'Name this compound:':'Write the formula for:')}</div>${givenHTML(p)}
+      <div class="qrow" data-q="q1"><div class="qt">${Q1T[p.dir]}</div><div class="yn"><button data-v="1">Yes</button><button data-v="0">No</button></div></div>
+      <div class="qrow" data-q="q2"><div class="qt">${Q2T[p.dir]}</div><div class="yn"><button data-v="1">Yes</button><button data-v="0">No</button></div></div>
+      <div class="fb" id="dfb">Answer both questions.</div><div class="vz"></div><div class="typed"></div><div class="res2"></div><div class="how"></div></div>`;
+    $$('.qrow',root).forEach(row=>$$('.yn button',row).forEach(b=>b.onclick=()=>choose(row.dataset.q,+b.dataset.v,row))); }
+  function choose(q,v,row){ if(P.stage!=='decide') return; P.a[q]=v; $$('.yn button',row).forEach(b=>{ b.classList.remove('wrong','right'); b.classList.toggle('sel',+b.dataset.v===v); }); const p=P.list[P.idx];
+    if(P.a.q1===null||P.a.q2===null) return; const c=p.c, e1=c.multi?1:0, e2=c.poly?1:0; $$('.pgiven span',root).forEach(s=>s.classList.remove('hl')); const fb=$('#dfb',root); const msgs=[];
+    [['q1',e1,hintQ1],['q2',e2,hintQ2]].forEach(([k,ex,hf])=>{ const row=$(`[data-q="${k}"]`,root); const bt=$$('.yn button',row).find(b=>+b.dataset.v===P.a[k]);
+      if(P.a[k]===ex){ bt.classList.remove('sel'); bt.classList.add('right'); } else { bt.classList.remove('sel'); bt.classList.add('wrong'); msgs.push(hf(p,!!P.a[k])); P.miss++;
+        const sels=k==='q1'?(p.dir==='f2n'?['.gc']:['.nrr','.nw1']):(p.dir==='f2n'?['.ga']:['.nw2']); sels.forEach(s=>$$('.pgiven '+s,root).forEach(x=>x.classList.add('hl'))); } });
+    if(msgs.length){ fb.className='fb bad'; fb.innerHTML=msgs.join('<br>')+'<br>Change your answer and try again.'; $$('.qrow',root).forEach(row=>{ if(!$('.yn .wrong',row)) return; }); P.a.q1=P.a.q1===e1?e1:null; P.a.q2=P.a.q2===e2?e2:null; return; }
+    P.stage='typed'; $$('.yn button',root).forEach(b=>b.disabled=true); fb.className='fb good'; fb.textContent='✓ Both questions are right.';
+    $('.vz',root).innerHTML=`<div class="verdict ${c.type}">${tcChip(c.type)} &nbsp;Rule: ${TYPE_RULE[c.type]}</div>`;
+    if(decideOnly){ solved(p); return; }
+    $('.typed',root).innerHTML=`<label>${p.dir==='f2n'?'Compound name':'Formula'}</label><div class="trow"><input id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="${p.dir==='f2n'?'e.g. iron(III) oxide':'e.g. Ca(NO3)2'}"><button class="btn" id="chk">Check</button><button class="btn secondary" id="howb">Show me how</button></div>
+      ${p.dir==='n2f'?'<div class="hint" style="margin-top:4px">Type subscripts as ordinary numbers: Fe2O3, Mg(OH)2.</div>':''}<div class="fb" id="tfb"></div>`;
+    const inp=$('#ans',root); setTimeout(()=>{ try{inp.focus();}catch(e){} },30); $('#chk',root).onclick=()=>check(); inp.addEventListener('keydown',e=>{ if(e.key==='Enter') check(); }); $('#howb',root).onclick=()=>showHow(); }
+  function check(){ const p=P.list[P.idx],inp=$('#ans',root),fb=$('#tfb',root); P.tries++; const r=(p.dir==='f2n'?checkName:checkFormula)(p,inp.value,P.tries);
+    if(r.ok){ inp.className='good'; inp.readOnly=true; solved(p); return; } inp.className='bad'; fb.className='fb bad'; fb.innerHTML=r.h.map(x=>'• '+x).join('<br>'); if(P.tries>=3&&!P.how) showHow(); }
+  function showHow(){ const p=P.list[P.idx]; const h=$('.how',root); if(P.how){ h.innerHTML=''; P.how=null; return; } h.innerHTML='<div class="hw"></div>'; P.how=makeComparator($('.hw',h),p.dir,[p.c]); P.how.play(); h.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+  function solved(p){ P.stage='solved'; const c=p.c; const prob=$('.prob',root); prob.classList.add('done'); const was=doneSec(sec); state.sec[sec.id]={n:Math.min(sec.need+0,nOf(sec.id)+1)}; save(); renderTabs();
+    const res=p.dir==='f2n'?`${c.disp} is <b>${c.nameStr}</b>`:`${c.nameStr} is <b>${c.disp}</b>`; let extra='';
+    if(p.pair>=0&&!p.first){ const prev=P.list[P.idx-1].c; extra=`<div class="cmpbox"><div class="ct">Compare the pair</div><div class="cl">${tcChip(prev.type)} ${prev.disp} <span style="color:var(--muted)">=</span> ${prev.nameStr}</div><div class="cl">${tcChip(c.type)} ${c.disp} <span style="color:var(--muted)">=</span> ${c.nameStr}</div><div class="cd">${diffText([prev,c])}</div></div>`; }
+    $('.res2',root).innerHTML=`<div class="fb good">${decideOnly?'':'✓ Correct! '}${decideOnly?'':res}</div>${extra}<div class="rowbtns"><button class="btn" id="nextp">${doneSec(sec)&&!was?'Section complete! Keep practicing':'Next problem'} ▶</button><button class="btn secondary" id="howb2">Replay the explanation</button></div>`;
+    $('#nextp',root).onclick=()=>{ P.idx++; if(P.idx>=P.list.length){ P.list=genProblems(sec,2); P.idx=0; } render(); }; $('#howb2',root).onclick=()=>{ P.how=null; showHow(); };
+    if(doneSec(sec)&&!was){ toast(`✓ Section complete: ${sec.tab}`); if(allDone()) setTimeout(()=>{ if(!state.code) openName(); },1600); } }
+  return P; }
+
+/* ============================ section views ============================ */
+const views={};
+const LESSON={AR:{t:'Compare: does the metal need a Roman numeral?',gen:()=>pairAR(),lead:{n2f:'These two names are almost identical. The only thing that changes is the <b>metal</b>: one of them has a Roman numeral and the other does not. Step through to see how the numeral changes what you write.',f2n:'These two formulas look nearly the same. The only thing that changes is the <b>metal</b>. Step through to see why one name needs a Roman numeral and the other does not.'}},
+  AP:{t:'Compare: single atom or polyatomic ion?',gen:()=>pairAP(),lead:{n2f:'These two names sound alike, but one has a <b>polyatomic ion</b> (look at the ending: -ide vs. -ate or hydroxide or ammonium). Step through to see how that changes the formula.',f2n:'These two formulas look alike, but one has a <b>polyatomic ion</b> (a group of atoms). Step through to see how that changes the name.'}},
+  RP:{t:'Compare all four rules side by side',gen:()=>grid4(),lead:{n2f:'Here are four names built from the same pieces. Two questions sort them: a <b>Roman numeral</b> or not, and a <b>polyatomic ion</b> or not. Step through how each one is turned into a formula.',f2n:'Here are four formulas built from the same pieces. Two questions sort them: can the metal have <b>more than one charge</b>, and is there a <b>polyatomic ion</b>? Step through how each one is named.'}}};
+const SEC_INTRO={n1:'Practice with names. Each problem comes as one half of a <b>matched pair</b>, so you can compare what changes. Answer the two questions, then write the formula.',
+  n2:'Practice with names. Pairs like <b>sodium nitride</b> and <b>sodium nitrate</b> sound alike; the endings tell you which rule to use.',
+  n3:'Practice with names where a Roman numeral and a polyatomic ion can show up together, or separately.',
+  f1:'Practice with formulas. Each problem is one half of a <b>matched pair</b>. Answer the two questions, then write the name.',
+  f2:'Practice with formulas. Pairs like <b>NaCl</b> and <b>NaClO₃</b> look alike; a group of atoms tells you to use the polyatomic name.',
+  f3:'Practice with formulas where a Roman numeral and a polyatomic ion can show up together, or separately.',
+  mix:'All four rules are mixed together, in both directions. For each one, answer the two questions, then write the name or the formula.'};
+function ensureView(i){ const sec=SECS[i]; let v=views[sec.id]; if(v) return v; v=document.createElement('div'); v.className='view'; v.id='view-'+sec.id; $('#views').appendChild(v); views[sec.id]=v;
+  if(sec.kind==='intro'){ const r=buildIntro(v); v._P=makePractice(r.practice,sec); v._P.start(); }
+  else{ const L=LESSON[sec.kind]; let lessonHTML='';
+    if(L) lessonHTML=`<div class="card"><h2>${sec.head}: ${L.t}</h2><p class="lead">${L.lead[sec.dir]}</p><div class="legendrow">${['A','R','P','RP'].map(tcChip).join('')}</div><div class="cmp" style="margin-top:8px"></div></div>`;
+    v.innerHTML=lessonHTML+`<div class="card"><h2>${sec.head}: practice (${sec.need} correct to finish)</h2><p class="lead">${SEC_INTRO[sec.id]}</p><div class="prac"></div></div>`;
+    if(L){ const mk=()=>{ const cs=L.gen(); v._S=makeComparator($('.cmp',v),sec.dir,cs,{extra:'<button class="btn secondary" data-a="other">Try another example</button>'}); $('[data-a="other"]',v).onclick=()=>{ mk(); }; }; mk(); }
+    v._P=makePractice($('.prac',v),sec); v._P.start(); }
+  v._refresh=()=>{ if(doneSec(sec)&&v._P&&!$('.prob.done',v)) {} };
+  return v; }
+
+/* ============================ completion code + form ============================ */
+const FORM_BASE='';   // paste the Google Form viewform link here to enable the "Turn it in" button
+const FORM_ENTRY={name:'entry.2072631698',code:'entry.1611661514'};
+const letter=c=>{ c=(c||'').toUpperCase(); return /[A-Z]/.test(c)?c:'X'; };
+function initials(name){ const p=name.trim().split(/\s+/).filter(Boolean); return [letter((p[0]||'')[0]),letter(p.length>1?(p[p.length-1]||'')[0]:((p[0]||'')[1]||(p[0]||'')[0]))]; }
+function makeCode(name){ const [a,b]=initials(name),cs='ABCDEFGHJKMNPQRSTUVWXYZ23456789',r=()=>cs[Math.floor(Math.random()*cs.length)]; return [r(),r(),a,r(),r(),b,r(),r()].join(''); }
+function turnInURL(){ const q=new URLSearchParams({usp:'pp_url'}); q.append(FORM_ENTRY.name,state.name||''); q.append(FORM_ENTRY.code,state.code||''); return FORM_BASE+'?'+q.toString(); }
+function openName(){ if(!allDone()) return; if(state.code){ showCode(); return; } $('#nameField').value=''; $('#nameErr').textContent=''; $('#nameModal').classList.add('show'); setTimeout(()=>$('#nameField').focus(),50); }
+function showCode(){ $('#winName').textContent=(state.name||'').split(/\s+/)[0]; $('#codeOut').textContent=state.code; const t=$('#turnIn'); if(FORM_BASE){ t.href=turnInURL(); t.style.display=''; $('#winNote').textContent='Press Turn it in to open the class form with your name and code already filled in, then press Submit there. (Form won\'t open? Screenshot this page or copy the code.)'; } else { t.style.display='none'; $('#winNote').textContent='Take a screenshot (or copy the code) and turn it in.'; }
+  $('#nameModal').classList.remove('show'); $('#winModal').classList.add('show'); }
+$('#nameGo').onclick=()=>{ const n=$('#nameField').value.trim(); if(n.replace(/[^A-Za-z]/g,'').length<2){ $('#nameErr').textContent='Please enter your first and last name.'; return; } state.name=n; state.code=makeCode(n); save(); showCode(); };
+$('#nameField').addEventListener('keydown',e=>{ if(e.key==='Enter') $('#nameGo').click(); });
+$('#nameCancel').onclick=()=>$('#nameModal').classList.remove('show'); $('#winClose').onclick=()=>$('#winModal').classList.remove('show');
+$('#copyBtn').onclick=()=>{ try{ navigator.clipboard.writeText(state.code); $('#copyBtn').textContent='Copied ✓'; }catch(e){} }; $('#codeBtn').onclick=openName;
+
+/* ============================ scroll strip + start ============================ */
+(function(){ const strip=$('#scrollstrip'),thumb=$('#scrollthumb'),de=document.documentElement; let drag=null;
+  function layout(){ const docH=de.scrollHeight,view=window.innerHeight,track=strip.clientHeight; if(docH<=view+4){ strip.style.display='none'; document.body.classList.remove('hasstrip'); return; }
+    strip.style.display='block'; document.body.classList.add('hasstrip'); const th=Math.max(48,track*view/docH); thumb.style.height=th+'px'; thumb.style.top=((window.scrollY/(docH-view))*(track-th))+'px'; }
+  function to(y){ const track=strip.clientHeight,th=thumb.offsetHeight,max=de.scrollHeight-window.innerHeight,r=strip.getBoundingClientRect(); window.scrollTo(0,clamp((y-r.top-th/2)/(track-th),0,1)*max); }
+  strip.addEventListener('pointerdown',e=>{ e.preventDefault(); try{strip.setPointerCapture(e.pointerId);}catch(_){} drag=true; strip.classList.add('drag'); to(e.clientY); });
+  strip.addEventListener('pointermove',e=>{ if(drag) to(e.clientY); }); const end=()=>{ drag=null; strip.classList.remove('drag'); }; strip.addEventListener('pointerup',end); strip.addEventListener('pointercancel',end);
+  window.addEventListener('scroll',layout,{passive:true}); window.addEventListener('resize',layout); setInterval(layout,800); layout(); })();
+renderTabs(); show(0);
+window.__nr={state,SECS,show,mkC,genProblems,checkName,checkFormula,views,makeComparator,pairAR,pairAP,pairRRP,pairPRP,grid4};
+</script>
+</body>
+</html>
