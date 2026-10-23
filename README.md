@@ -37,7 +37,7 @@ Each lesson animation compares similar-looking compounds (for example **NaCl / F
 
 ## Teacher notes
 - Tabs unlock in order. Add `#unlock` to the URL (`.../ionic-naming-rules/#unlock`) to open them all for demonstration.
-- Finishing every section gives a **completion code** (initials in two of its slots). To add the **Turn it in** button that opens your Google Form pre-filled, paste the form's `viewform` link into `FORM_BASE` near the end of `index.html` (and check `FORM_ENTRY` holds the Name and Code entry IDs).
+- Finishing every section gives a **completion code** (initials in two of its slots). **Turn it in** opens the class Google Form with the Name and Code already filled in. To use a different form, change `FORM_BASE` (and `FORM_ENTRY` if its Name and Code entry IDs differ) near the end of `index.html`.
 
 ## Tech
 Single self-contained `index.html`: plain HTML/CSS/JS, no dependencies, touch-friendly for iPad, with the same always-visible scroll strip as the other tools. Deployed via GitHub Pages from `main`.

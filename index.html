@@ -495,7 +495,7 @@ function ensureView(i){ const sec=SECS[i]; let v=views[sec.id]; if(v) return v; 
   return v; }
 
 /* ============================ completion code + form ============================ */
-const FORM_BASE='';   // paste the Google Form viewform link here to enable the "Turn it in" button
+const FORM_BASE='https://docs.google.com/forms/d/e/1FAIpQLScasCNGJutdNebExfuE-M_apWyNVAXwmx0mqHrP167SwzZDSw/viewform';   // the class Google Form; "Turn it in" opens it pre-filled
 const FORM_ENTRY={name:'entry.2072631698',code:'entry.1611661514'};
 const letter=c=>{ c=(c||'').toUpperCase(); return /[A-Z]/.test(c)?c:'X'; };
 function initials(name){ const p=name.trim().split(/\s+/).filter(Boolean); return [letter((p[0]||'')[0]),letter(p.length>1?(p[p.length-1]||'')[0]:((p[0]||'')[1]||(p[0]||'')[0]))]; }
